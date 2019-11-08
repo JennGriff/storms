@@ -1,0 +1,78 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r message=FALSE, warning=FALSE, paged.print=TRUE}
+library("tidyverse")
+install.packages('GGally')
+
+View(storms)
+data("storms")
+View(storms)
+?storms
+```
+
+```{r}
+library("GGally")
+ggpairs(data=storms, columns=9:10, title = "storm data")
+ggplot(storms, aes(x=pressure, y=wind)) + geom_point()
+```
+
+```{r}
+# formula Y ~ x
+# DV ~ IV (dependent variable as predicted by independent variable)
+long_model <- lm(data=storms, formula = wind ~ long)
+summary(long_model)
+## 
+```
+```{r}
+data("airquality")
+air <- as_tibble(airquality)
+?airquality
+#model <- lm()
+#Depedent variable is Y in Regressions
+#Correlations, arent directional
+cor.test(airquality$Ozone, airquality$Solar.R)
+## interpret results
+#pValue:probability of 
+# lower the P value the more likely the relationship is not a coincidence
+# low P, is this significant
+#Correlation coefficient strenghh and direction of relationship.
+# Positive, as one grows the other does
+
+ggplot(airquality, aes(x=Solar.R, y=Ozone)) + geom_point() + geom_smooth()
+
+#how can we use one variable to predict another variable
+
+simple_model <- lm(data=airquality, formula = Ozone ~ Solar.R)
+summary(simple_model)
+
+#How well this variable Solar.R can predict the Ozone
+#Intercept tells us x value = 0, base y value
+#Intercept: Exactly 0 radiation the ozone would be
+
+#Estimate : slope of measurement
+# Pvalue low = statistically significant
+# R-Squared value: what % of the vlaue of Ozone can be attributed by Solar R
+```
+Notes:
+Multi-Variant Models:
+  dependent variables, trying to predict more than one variable 
+  e.g. predict Ozone and particles in the air
+Multiple linear regression:
+
+```{r}
+quality_model <- lm(air, formula = Ozone ~ Solar.R + Wind + Temp + Day + Month)
+summary(quality_model)
+
+#Interpret : 
+  #P-Value: Does this variable have statistically signicantly adding value to model
+    # High : not valuable
+  #Overall P Value: not less than .05 -> then not a good model at predicting 
+ #Adjusted R Squared: about 60% of Ozone can be predicted by other variables
+  #Intercept : if all variables are zero
+
+quality_model2 <- lm(air, formula = Ozone ~ Solar.R + Wind + Temp )
+summary(quality_model2)
+```
+
