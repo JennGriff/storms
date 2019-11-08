@@ -76,3 +76,22 @@ quality_model2 <- lm(air, formula = Ozone ~ Solar.R + Wind + Temp )
 summary(quality_model2)
 ```
 
+Y HAT: Predicted value of y ( the dependent variable ) in a regression equation. It can also be considered to be the average value of the responsive variable. 
+
+```{r}
+solar = 213
+solar_p = 0.05982
+
+wind = 7.4
+wind_p = -3.33359
+
+temp = 88
+temp_p = 1.65209 
+
+beta = -64.34208
+yhat <- beta + solar_p*solar + wind_p*wind + temp_p*temp
+yhat
+
+?confint
+confint(quality_model2, level=0.95)
+```
