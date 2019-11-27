@@ -95,3 +95,78 @@ yhat
 ?confint
 confint(quality_model2, level=0.95)
 ```
+
+```{r}
+#install.packages('caret')
+library(caret)
+swiss <- as_tibble(swiss)
+set.seed(385)
+
+# pass in y value (to be predicted)
+sample_selection <- createDataPartition(swiss$Fertility, p = 0.70, list = FALSE)
+  
+train <- swiss[sample_selection, ]
+test <- swiss[-sample_selection, ]
+
+##BUILD MODEL FOR ALL VARIABLES::
+train_model_all <- lm(Fertility~ ., data = train)
+summary(train_model_all)
+
+train_model <- lm(Fertility~ Agriculture + Education, data = train)
+summary(train_model)
+```
+
+```{r}
+#LetsPredict model + dataset
+predictions <- train_model %>% predict(test)
+predictions
+
+test$Fertility
+##
+R2(predictions, test$Fertility)
+
+## Smaller the number the better the prediction. This is a 
+# measure of the mean difference from regression line :: residuals
+MAE(predictions, test$Fertility)
+```
+##AIRQUALITY
+
+NA values are a problem when building a model. 
+
+```{r}
+#install.packages('caret')
+library(caret)
+air <- as_tibble(airquality) %>% subset(!is.na(Ozone) &
+                                        !is.na(Solar.R) &
+                                        !is.na(Wind) &
+                                        !is.na(Temp))
+set.seed(385)
+
+# pass in y value (to be predicted)
+sample_selection <- createDataPartition(air$Ozone, p = 0.70, list = FALSE)
+  
+train <- air[sample_selection, ]
+test <- air[-sample_selection, ]
+
+##BUILD MODEL FOR ALL VARIABLES::
+train_model_all <- lm(Ozone ~ ., data = train)
+summary(train_model_all)
+
+train_model <- lm(Ozone ~ Solar.R + Wind + Temp, data = train)
+summary(train_model)
+
+#LetsPredict model + dataset
+predictions <- train_model %>% predict(test)
+predictions
+
+test$Ozone
+##
+R2(predictions, test$Ozone)
+
+## Smaller the number the better the prediction. This is a 
+# measure of the mean difference from regression line :: residuals
+MAE(predictions, test$Ozone)
+
+ggplot(test, aes(x=predictions, y = Ozone)) + geom_point()
+```
+
